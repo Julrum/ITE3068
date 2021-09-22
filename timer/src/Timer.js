@@ -1,6 +1,9 @@
-let Timer = () => (
+let Timer = ({ remained }) => (
   <div>
-    <h1>25 : 00</h1>
+    <h1>
+      {Math.floor(remained / 60)} : {remained % 60 < 10 ? "0" : ""}
+      {remained % 60}
+    </h1>
   </div>
 );
 

@@ -1,11 +1,11 @@
-import Timer from "./Timer";
 import "./App.css";
+import TimerPannel from "./TimerPannel";
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Timer />
+        <TimerPannel />
       </header>
     </div>
   );
