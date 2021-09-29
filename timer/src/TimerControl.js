@@ -48,6 +48,7 @@ let TimerControl = (prop) => {
     <ButtonGroup spacing={2} aria-label="outlined primary button group">
       {["Stop", "Start", "Pause", "Resume"].map((item, index) => (
         <Button
+          key={index}
           onClick={fns[index]}
           variant="contained"
           disabled={arr_disabled[index]}
