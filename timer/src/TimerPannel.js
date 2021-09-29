@@ -1,13 +1,15 @@
 import { Component } from "react";
+
 import Timer from "./Timer";
 import TimerAnimation from "./TimerAnimation";
 import TimerControl from "./TimerControl";
 
+const remainedTime = 3;
 class TimerPannel extends Component {
   constructor() {
     super();
     this.state = {
-      remained: 1500,
+      remained: remainedTime,
       initialized: false,
       activated: false,
       paused: false,
@@ -17,11 +19,20 @@ class TimerPannel extends Component {
   handleStartTimer = () => {
     this.interval = setInterval(() => {
       this.setState((prev) => {
-        return {
-          initialized: true,
-          activated: true,
-          remained: prev.remained - 1,
-        };
+        if (prev.remained <= 0) {
+          clearInterval(this.interval);
+          return {
+            activated: false,
+            paused: false,
+            initialized: false,
+          };
+        } else {
+          return {
+            initialized: true,
+            activated: true,
+            remained: prev.remained - 1,
+          };
+        }
       });
     }, 1000);
   };
@@ -30,7 +41,7 @@ class TimerPannel extends Component {
       clearInterval(this.interval);
       return {
         initialized: false,
-        remained: 1500,
+        remained: remainedTime,
         activated: false,
         pause: false,
       };
@@ -57,6 +68,7 @@ class TimerPannel extends Component {
     return (
       <div>
         <TimerAnimation
+          remained={remained}
           initialized={initialized}
           activated={activated}
           paused={paused}

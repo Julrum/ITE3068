@@ -1,3 +1,6 @@
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+
 let TimerControl = (prop) => {
   let {
     handleStartTimer,
@@ -7,17 +10,52 @@ let TimerControl = (prop) => {
     activated,
     paused,
   } = prop;
+
+  let fns = [
+    handleStopTimer,
+    handleStartTimer,
+    handlePauseTimer,
+    handleResumeTimer,
+  ];
+
+  let arr_disabled = [
+    false,
+    activated,
+    paused || !activated,
+    !paused || !activated,
+  ];
+  // return (
+  //   <Stack spacing={2} direction="row">
+  //     <Button variant="contained" onClick={handleStopTimer}>
+  //       Stop
+  //     </Button>
+  //     {!activated ? (
+  //       <Button variant="contained" onClick={handleStartTimer}>
+  //         Start
+  //       </Button>
+  //     ) : !paused ? (
+  //       <Button variant="contained" onClick={handlePauseTimer}>
+  //         Pause
+  //       </Button>
+  //     ) : (
+  //       <Button variant="contained" onClick={handleResumeTimer}>
+  //         Resume
+  //       </Button>
+  //     )}
+  //   </Stack>
+  // );
   return (
-    <div>
-      <button onClick={handleStopTimer}>Stop</button>
-      {!activated ? (
-        <button onClick={handleStartTimer}>Start</button>
-      ) : !paused ? (
-        <button onClick={handlePauseTimer}>Pause</button>
-      ) : (
-        <button onClick={handleResumeTimer}>Resume</button>
-      )}
-    </div>
+    <Stack spacing={2} direction="row">
+      {["Stop", "Start", "Pause", "Resume"].map((item, index) => (
+        <Button
+          onClick={fns[index]}
+          variant="contained"
+          disabled={arr_disabled[index]}
+        >
+          {item}
+        </Button>
+      ))}
+    </Stack>
   );
 };
 
