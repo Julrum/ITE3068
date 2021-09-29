@@ -61,7 +61,16 @@ class TimerPannel extends Component {
   handleResumeTimer = () => {
     this.interval = setInterval(() => {
       this.setState((prev) => {
-        return { paused: false, remained: prev.remained - 1 };
+        if (prev.remained <= 0) {
+          clearInterval(this.interval);
+          return {
+            activated: false,
+            paused: false,
+            initialized: false,
+          };
+        } else {
+          return { paused: false, remained: prev.remained - 1 };
+        }
       });
     }, 1000);
   };
