@@ -2,11 +2,10 @@ import { Component } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import { CardActionArea } from "@mui/material";
-
 import Timer from "./Timer";
 import TimerAnimation from "./TimerAnimation";
 import TimerControl from "./TimerControl";
+import TimerUp from "./TimerUp";
 
 let remainedTime = 3;
 class TimerPannel extends Component {
@@ -70,8 +69,8 @@ class TimerPannel extends Component {
   render() {
     let { remained, initialized, activated, paused } = this.state;
     return (
-      <Card sx={{ maxWidth: 360 }}>
-        <CardActionArea>
+      <>
+        <Card sx={{ maxWidth: 360 }}>
           <CardMedia
             component="img"
             height="140"
@@ -95,8 +94,9 @@ class TimerPannel extends Component {
               handleResumeTimer={this.handleResumeTimer}
             />
           </CardContent>
-        </CardActionArea>
-      </Card>
+        </Card>
+        <TimerUp open={remained <= 0} handleClose={this.handleStopTimer} />
+      </>
     );
   }
 }
