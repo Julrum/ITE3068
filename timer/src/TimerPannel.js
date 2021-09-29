@@ -1,4 +1,8 @@
 import { Component } from "react";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import { CardActionArea } from "@mui/material";
 
 import Timer from "./Timer";
 import TimerAnimation from "./TimerAnimation";
@@ -66,23 +70,33 @@ class TimerPannel extends Component {
   render() {
     let { remained, initialized, activated, paused } = this.state;
     return (
-      <div>
-        <TimerAnimation
-          remained={remained}
-          initialized={initialized}
-          activated={activated}
-          paused={paused}
-        />
-        <Timer remained={remained} />
-        <TimerControl
-          activated={activated}
-          paused={paused}
-          handleStartTimer={this.handleStartTimer}
-          handleStopTimer={this.handleStopTimer}
-          handlePauseTimer={this.handlePauseTimer}
-          handleResumeTimer={this.handleResumeTimer}
-        />
-      </div>
+      <Card sx={{ maxWidth: 360 }}>
+        <CardActionArea>
+          <CardMedia
+            component="img"
+            height="140"
+            image="https://mui.com/static/images/cards/paella.jpg"
+            alt="paella"
+          />
+          <CardContent>
+            <TimerAnimation
+              remained={remained}
+              initialized={initialized}
+              activated={activated}
+              paused={paused}
+            />
+            <Timer remained={remained} />
+            <TimerControl
+              activated={activated}
+              paused={paused}
+              handleStartTimer={this.handleStartTimer}
+              handleStopTimer={this.handleStopTimer}
+              handlePauseTimer={this.handlePauseTimer}
+              handleResumeTimer={this.handleResumeTimer}
+            />
+          </CardContent>
+        </CardActionArea>
+      </Card>
     );
   }
 }
