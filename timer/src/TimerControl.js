@@ -1,4 +1,4 @@
-import Stack from "@mui/material/Stack";
+import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "@mui/material/Button";
 
 let TimerControl = (prop) => {
@@ -45,7 +45,7 @@ let TimerControl = (prop) => {
   //   </Stack>
   // );
   return (
-    <Stack spacing={2} direction="row">
+    <ButtonGroup spacing={2} aria-label="outlined primary button group">
       {["Stop", "Start", "Pause", "Resume"].map((item, index) => (
         <Button
           onClick={fns[index]}
@@ -55,7 +55,7 @@ let TimerControl = (prop) => {
           {item}
         </Button>
       ))}
-    </Stack>
+    </ButtonGroup>
   );
 };
 

@@ -4,7 +4,7 @@ import Timer from "./Timer";
 import TimerAnimation from "./TimerAnimation";
 import TimerControl from "./TimerControl";
 
-const remainedTime = 3;
+let remainedTime = 3;
 class TimerPannel extends Component {
   constructor() {
     super();
