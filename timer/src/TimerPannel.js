@@ -2,24 +2,33 @@ import { Component } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
+import { Container } from "@mui/material";
+import Slider from "@mui/material/Slider";
 import Timer from "./Timer";
 import TimerAnimation from "./TimerAnimation";
 import TimerControl from "./TimerControl";
 import TimerUp from "./TimerUp";
 
-let remainedTime = 3;
+let timerValue = 1500;
 class TimerPannel extends Component {
   constructor() {
     super();
     this.state = {
-      remained: remainedTime,
+      remained: timerValue,
       initialized: false,
       activated: false,
       paused: false,
+      timerValue,
     };
   }
 
   handleStartTimer = () => {
+    this.setState((prev) => {
+      return {
+        remained: prev.timerValue,
+        initialized: true,
+      };
+    });
     this.interval = setInterval(() => {
       this.setState((prev) => {
         if (prev.remained <= 0) {
@@ -44,7 +53,8 @@ class TimerPannel extends Component {
       clearInterval(this.interval);
       return {
         initialized: false,
-        remained: remainedTime,
+        remained: timerValue,
+        timerValue,
         activated: false,
         pause: false,
       };
@@ -75,8 +85,15 @@ class TimerPannel extends Component {
     }, 1000);
   };
 
+  handleChangeSlider = (e) => {
+    this.setState({
+      remained: e.target.value * 60,
+      timerValue: e.target.value * 60,
+    });
+  };
+
   render() {
-    let { remained, initialized, activated, paused } = this.state;
+    let { remained, timerValue, initialized, activated, paused } = this.state;
     return (
       <>
         <Card sx={{ maxWidth: 360 }}>
@@ -94,6 +111,19 @@ class TimerPannel extends Component {
               paused={paused}
             />
             <Timer remained={remained} />
+            <Container>
+              <div style={{ width: "280px" }}>
+                <Slider
+                  disabled={activated}
+                  defaultValue={25}
+                  value={timerValue / 60}
+                  step={5}
+                  min={5}
+                  max={30}
+                  onChange={this.handleChangeSlider}
+                />
+              </div>
+            </Container>
             <TimerControl
               activated={activated}
               paused={paused}
