@@ -2,12 +2,11 @@ import { Component } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import { Container } from "@mui/material";
-import Slider from "@mui/material/Slider";
 import Timer from "./Timer";
 import TimerAnimation from "./TimerAnimation";
 import TimerControl from "./TimerControl";
 import TimerUp from "./TimerUp";
+import Timerform from "./Form";
 
 let timerValue = 1500;
 class TimerPannel extends Component {
@@ -111,19 +110,11 @@ class TimerPannel extends Component {
               paused={paused}
             />
             <Timer remained={remained} />
-            <Container>
-              <div style={{ width: "280px" }}>
-                <Slider
-                  disabled={activated}
-                  defaultValue={25}
-                  value={timerValue / 60}
-                  step={5}
-                  min={5}
-                  max={30}
-                  onChange={this.handleChangeSlider}
-                />
-              </div>
-            </Container>
+            <Timerform
+              activated={activated}
+              timerValue={timerValue}
+              handleChangeSlider={this.handleChangeSlider}
+            />
             <TimerControl
               activated={activated}
               paused={paused}
