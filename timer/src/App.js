@@ -1,5 +1,5 @@
 import "./App.css";
-import TimerPannel from "./TimerPannel";
+import TimerPannel from "./Timer";
 
 function App() {
   return (

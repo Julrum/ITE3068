@@ -2,10 +2,10 @@ import { Component } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Timer from "./Timer";
-import TimerAnimation from "./TimerAnimation";
-import TimerControl from "./TimerControl";
-import TimerUp from "./TimerUp";
+import Remained from "./Remained";
+import TimerAnimation from "./Animation";
+import TimerControl from "./Control";
+import TimeUp from "./TimeUp";
 import Timerform from "./Form";
 
 let timerValue = 1500;
@@ -109,7 +109,7 @@ class TimerPannel extends Component {
               activated={activated}
               paused={paused}
             />
-            <Timer remained={remained} />
+            <Remained remained={remained} />
             <Timerform
               activated={activated}
               timerValue={timerValue}
@@ -125,7 +125,7 @@ class TimerPannel extends Component {
             />
           </CardContent>
         </Card>
-        <TimerUp open={remained <= 0} handleClose={this.handleStopTimer} />
+        <TimeUp open={remained <= 0} handleClose={this.handleStopTimer} />
       </>
     );
   }

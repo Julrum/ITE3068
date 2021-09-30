@@ -1,6 +1,6 @@
 import TrackChangesIcon from "@mui/icons-material/TrackChanges";
 
-let TimerAnimation = ({ remained, initialized, activated, paused }) => {
+let Animation = ({ remained, initialized, activated, paused }) => {
   return (
     <TrackChangesIcon
       className={initialized ? "App-logo" : ""}
@@ -14,4 +14,4 @@ let TimerAnimation = ({ remained, initialized, activated, paused }) => {
   );
 };
 
-export default TimerAnimation;
+export default Animation;

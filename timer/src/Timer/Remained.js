@@ -1,6 +1,6 @@
 import Typography from "@mui/material/Typography";
 
-let Timer = ({ remained }) => (
+let Remained = ({ remained }) => (
   <div>
     <Typography variant="h3" sx={{ fontWeight: 700 }}>
       {remained / 60 < 10 ? "0" : ""}
@@ -10,4 +10,4 @@ let Timer = ({ remained }) => (
   </div>
 );
 
-export default Timer;
+export default Remained;

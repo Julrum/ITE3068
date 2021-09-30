@@ -1,7 +1,7 @@
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "@mui/material/Button";
 
-let TimerControl = (prop) => {
+let Control = (prop) => {
   let {
     handleStartTimer,
     handleStopTimer,
@@ -24,26 +24,6 @@ let TimerControl = (prop) => {
     paused || !activated,
     !paused || !activated,
   ];
-  // return (
-  //   <Stack spacing={2} direction="row">
-  //     <Button variant="contained" onClick={handleStopTimer}>
-  //       Stop
-  //     </Button>
-  //     {!activated ? (
-  //       <Button variant="contained" onClick={handleStartTimer}>
-  //         Start
-  //       </Button>
-  //     ) : !paused ? (
-  //       <Button variant="contained" onClick={handlePauseTimer}>
-  //         Pause
-  //       </Button>
-  //     ) : (
-  //       <Button variant="contained" onClick={handleResumeTimer}>
-  //         Resume
-  //       </Button>
-  //     )}
-  //   </Stack>
-  // );
   return (
     <ButtonGroup spacing={2} aria-label="outlined primary button group">
       {["Stop", "Start", "Pause", "Resume"].map((item, index) => (
@@ -60,4 +40,4 @@ let TimerControl = (prop) => {
   );
 };
 
-export default TimerControl;
+export default Control;

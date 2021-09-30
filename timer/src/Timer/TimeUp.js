@@ -4,7 +4,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 
-let TimerUp = ({ open, handleClose }) => (
+let TimeUp = ({ open, handleClose }) => (
   <div>
     <Dialog
       open={open}
@@ -20,4 +20,4 @@ let TimerUp = ({ open, handleClose }) => (
   </div>
 );
 
-export default TimerUp;
+export default TimeUp;
