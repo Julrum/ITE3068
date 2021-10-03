@@ -55,7 +55,7 @@ class TimerPannel extends Component {
         remained: timerValue,
         timerValue,
         activated: false,
-        pause: false,
+        paused: false,
       };
     });
   };
@@ -93,6 +93,7 @@ class TimerPannel extends Component {
 
   render() {
     let { remained, timerValue, initialized, activated, paused } = this.state;
+    console.log(this.state);
     return (
       <>
         <Card sx={{ maxWidth: 360 }}>
