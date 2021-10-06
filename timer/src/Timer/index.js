@@ -89,7 +89,11 @@ class TimerPannel extends Component {
     if (e.target.value < 5) {
       this.setState({ helperText: "Timer value cannot be 0", timerValue: 300 });
     } else {
-      this.setState({ helperText: "", timerValue: e.target.value * 60 });
+      this.setState({
+        helperText: "",
+        timerValue: e.target.value * 60,
+        remained: e.target.value * 60,
+      });
     }
   };
 
