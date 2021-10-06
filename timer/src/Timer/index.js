@@ -19,6 +19,9 @@ class TimerPannel extends Component {
       paused: false,
       timerValue,
       helperText: "",
+      timerTitle: "",
+      helperTextField: "",
+      errorTextField: false,
     };
   }
 
@@ -85,6 +88,22 @@ class TimerPannel extends Component {
     }, 1000);
   };
 
+  handleChangeTextField = (e) => {
+    if (e.target.value && e.target.value.length > 25) {
+      this.setState({
+        errorTextField: true,
+        helperTextField: "Title cannot exceeds 25 char.",
+        timerTitle: e.target.value,
+      });
+    } else {
+      this.setState({
+        errorTextField: false,
+        helperTextField: "",
+        timerTitle: e.target.value,
+      });
+    }
+  };
+
   handleChangeSlider = (e) => {
     if (e.target.value < 5) {
       this.setState({ helperText: "Timer value cannot be 0", timerValue: 300 });
@@ -97,9 +116,33 @@ class TimerPannel extends Component {
     }
   };
 
+  handleSubmit = (e) => {
+    e.preventDefault();
+    let { timerTitle, timerValue } = this.state;
+    if (timerTitle === "") {
+      this.setState({ errorTextField: true, helperTextField: "Empty Title" });
+    } else {
+      this.setState({
+        timerTitle: "",
+        timerValue,
+        remained: timerValue,
+      });
+      this.handleStartTimer();
+    }
+  };
+
   render() {
-    let { remained, timerValue, initialized, activated, paused, helperText } =
-      this.state;
+    let {
+      remained,
+      timerValue,
+      initialized,
+      activated,
+      paused,
+      helperText,
+      timerTitle,
+      errorTextField,
+      helperTextField,
+    } = this.state;
 
     return (
       <>
@@ -121,8 +164,13 @@ class TimerPannel extends Component {
             <Timerform
               activated={activated}
               timerValue={timerValue}
+              timerTitle={timerTitle}
               helperText={helperText}
+              errorTextField={errorTextField}
+              helperTextField={helperTextField}
               handleChangeSlider={this.handleChangeSlider}
+              handleChangeTextField={this.handleChangeTextField}
+              handleSubmit={this.handleSubmit}
             />
             <TimerControl
               activated={activated}
