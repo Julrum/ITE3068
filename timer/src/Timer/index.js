@@ -18,6 +18,7 @@ class TimerPannel extends Component {
       activated: false,
       paused: false,
       timerValue,
+      helperText: "",
     };
   }
 
@@ -85,15 +86,17 @@ class TimerPannel extends Component {
   };
 
   handleChangeSlider = (e) => {
-    this.setState({
-      remained: e.target.value * 60,
-      timerValue: e.target.value * 60,
-    });
+    if (e.target.value < 5) {
+      this.setState({ helperText: "Timer value cannot be 0", timerValue: 300 });
+    } else {
+      this.setState({ helperText: "", timerValue: e.target.value * 60 });
+    }
   };
 
   render() {
-    let { remained, timerValue, initialized, activated, paused } = this.state;
-    console.log(this.state);
+    let { remained, timerValue, initialized, activated, paused, helperText } =
+      this.state;
+
     return (
       <>
         <Card sx={{ maxWidth: 360 }}>
@@ -114,6 +117,7 @@ class TimerPannel extends Component {
             <Timerform
               activated={activated}
               timerValue={timerValue}
+              helperText={helperText}
               handleChangeSlider={this.handleChangeSlider}
             />
             <TimerControl
