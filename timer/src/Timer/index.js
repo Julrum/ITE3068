@@ -7,6 +7,7 @@ import TimerAnimation from "./Animation";
 import TimerControl from "./Control";
 import TimeUp from "./TimeUp";
 import Timerform from "./Form";
+import TimerTitle from "./Title";
 
 let timerValue = 1500;
 class TimerPannel extends Component {
@@ -20,6 +21,7 @@ class TimerPannel extends Component {
       timerValue,
       helperText: "",
       timerTitle: "",
+      currentTitle: "",
       helperTextField: "",
       errorTextField: false,
     };
@@ -123,6 +125,7 @@ class TimerPannel extends Component {
       this.setState({ errorTextField: true, helperTextField: "Empty Title" });
     } else {
       this.setState({
+        currentTitle: timerTitle,
         timerTitle: "",
         timerValue,
         remained: timerValue,
@@ -139,6 +142,7 @@ class TimerPannel extends Component {
       activated,
       paused,
       helperText,
+      currentTitle,
       timerTitle,
       errorTextField,
       helperTextField,
@@ -160,6 +164,7 @@ class TimerPannel extends Component {
               activated={activated}
               paused={paused}
             />
+            <TimerTitle activated={activated} taskTitle={currentTitle} />
             <Remained remained={remained} />
             <Timerform
               activated={activated}
@@ -175,7 +180,7 @@ class TimerPannel extends Component {
             <TimerControl
               activated={activated}
               paused={paused}
-              handleStartTimer={this.handleStartTimer}
+              handleStartTimer={this.handleSubmit}
               handleStopTimer={this.handleStopTimer}
               handlePauseTimer={this.handlePauseTimer}
               handleResumeTimer={this.handleResumeTimer}
