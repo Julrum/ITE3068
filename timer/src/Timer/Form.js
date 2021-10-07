@@ -18,7 +18,7 @@ let Timerform = ({
     { value: 5, label: "5 min." },
     { value: 30, label: "30min." },
   ];
-  console.log(timerTitle);
+
   return (
     !activated && (
       <Container>

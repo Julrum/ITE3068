@@ -3,27 +3,37 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Remained from "./Remained";
+import TimeUp from "./TimeUp";
 import TimerAnimation from "./Animation";
 import TimerControl from "./Control";
-import TimeUp from "./TimeUp";
-import Timerform from "./Form";
 import TimerTitle from "./Title";
+import Timerform from "./Form";
+import TimerHistory from "./History";
+
+const history = [
+  { id: 0, title: "Theory", duration: 1500 },
+  { id: 1, title: "Break", duration: 300 },
+  { id: 2, title: "Lab1", duration: 1500 },
+  { id: 3, title: "Break", duration: 300 },
+  { id: 4, title: "Lab2", duration: 1500 },
+];
 
 let timerValue = 1500;
 class TimerPannel extends Component {
   constructor() {
     super();
     this.state = {
-      remained: timerValue,
-      initialized: false,
       activated: false,
-      paused: false,
-      timerValue,
-      helperText: "",
-      timerTitle: "",
       currentTitle: "",
-      helperTextField: "",
       errorTextField: false,
+      helperText: "",
+      helperTextField: "",
+      history: history,
+      initialized: false,
+      paused: false,
+      remained: timerValue,
+      timerTitle: "",
+      timerValue,
     };
   }
 
@@ -120,15 +130,19 @@ class TimerPannel extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    let { timerTitle, timerValue } = this.state;
+    let { history, timerTitle, timerValue } = this.state;
     if (timerTitle === "") {
       this.setState({ errorTextField: true, helperTextField: "Empty Title" });
     } else {
       this.setState({
         currentTitle: timerTitle,
+        history: [
+          ...history,
+          { id: history.length, title: timerTitle, duration: timerValue },
+        ],
+        remained: timerValue,
         timerTitle: "",
         timerValue,
-        remained: timerValue,
       });
       this.handleStartTimer();
     }
@@ -164,6 +178,7 @@ class TimerPannel extends Component {
               activated={activated}
               paused={paused}
             />
+            <TimerHistory history={history} />
             <TimerTitle activated={activated} taskTitle={currentTitle} />
             <Remained remained={remained} />
             <Timerform
