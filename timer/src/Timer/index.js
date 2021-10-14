@@ -1,34 +1,35 @@
 import { Component } from "react";
+import axios from "axios";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Remained from "./Remained";
 import TimeUp from "./TimeUp";
-import TimerAnimation from "./Animation";
 import TimerControl from "./Control";
 import TimerTitle from "./Title";
 import Timerform from "./Form";
 import TimerHistory from "./History";
 
-const history = [
-  { id: 0, title: "Theory", duration: 1500 },
-  { id: 1, title: "Break", duration: 300 },
-  { id: 2, title: "Lab1", duration: 1500 },
-  { id: 3, title: "Break", duration: 300 },
-  { id: 4, title: "Lab2", duration: 1500 },
-];
-
 let timerValue = 1500;
 class TimerPannel extends Component {
   constructor() {
     super();
+    axios
+      .post(
+        "http://localhost:4000/graphql",
+        { query: "{tasks {id title duration}}", variables: null },
+        { "Content-Type": "application/json" }
+      )
+      .then((res) => this.setState({ history: res.data.data.tasks }))
+      .catch((e) => console.log(e));
     this.state = {
       activated: false,
       currentTitle: "",
+      current_task: {},
       errorTextField: false,
       helperText: "",
       helperTextField: "",
-      history: history,
+      history: [],
       initialized: false,
       paused: false,
       remained: timerValue,
@@ -134,16 +135,22 @@ class TimerPannel extends Component {
     if (timerTitle === "") {
       this.setState({ errorTextField: true, helperTextField: "Empty Title" });
     } else {
-      this.setState({
-        currentTitle: timerTitle,
-        history: [
-          ...history,
-          { id: history.length, title: timerTitle, duration: timerValue },
-        ],
-        remained: timerValue,
-        timerTitle: "",
-        timerValue,
+      let new_task = {
+        id: history.length,
+        title: timerTitle,
+        duration: timerValue,
+      };
+      this.setState((prev) => {
+        return {
+          currentTitle: timerTitle,
+          current_task: new_task,
+          history: [...prev.history, "a", new_task],
+          remained: timerValue,
+          timerTitle: "",
+          timerValue,
+        };
       });
+
       this.handleStartTimer();
     }
   };
@@ -156,7 +163,9 @@ class TimerPannel extends Component {
       activated,
       paused,
       helperText,
+      history,
       currentTitle,
+      current_task,
       timerTitle,
       errorTextField,
       helperTextField,
@@ -172,13 +181,14 @@ class TimerPannel extends Component {
             alt="paella"
           />
           <CardContent>
-            <TimerAnimation
+            <TimerHistory
+              history={history}
+              activated={activated}
+              current_task={current_task}
               remained={remained}
               initialized={initialized}
-              activated={activated}
               paused={paused}
             />
-            <TimerHistory history={history} />
             <TimerTitle activated={activated} taskTitle={currentTitle} />
             <Remained remained={remained} />
             <Timerform
