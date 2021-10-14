@@ -6,22 +6,14 @@ import CardMedia from "@mui/material/CardMedia";
 import Remained from "./Remained";
 import TimeUp from "./TimeUp";
 import TimerControl from "./Control";
+import TimerHistory from "./History";
 import TimerTitle from "./Title";
 import Timerform from "./Form";
-import TimerHistory from "./History";
 
 let timerValue = 1500;
 class TimerPannel extends Component {
   constructor() {
     super();
-    axios
-      .post(
-        "http://localhost:4000/graphql",
-        { query: "{tasks {id title duration}}", variables: null },
-        { "Content-Type": "application/json" }
-      )
-      .then((res) => this.setState({ history: res.data.data.tasks }))
-      .catch((e) => console.log(e));
     this.state = {
       activated: false,
       currentTitle: "",
@@ -38,11 +30,22 @@ class TimerPannel extends Component {
     };
   }
 
+  componentDidMount() {
+    axios
+      .post(
+        "http://localhost:4000/graphql",
+        { query: "{tasks {id title duration}}", variables: null },
+        { "Content-Type": "application/json" }
+      )
+      .then((res) => this.setState({ history: res.data.data.tasks }))
+      .catch((e) => console.log(e));
+  }
+
   handleStartTimer = () => {
     this.setState((prev) => {
       return {
-        remained: prev.timerValue,
         initialized: true,
+        remained: prev.timerValue,
       };
     });
     this.interval = setInterval(() => {
@@ -51,13 +54,13 @@ class TimerPannel extends Component {
           clearInterval(this.interval);
           return {
             activated: false,
-            paused: false,
             initialized: false,
+            paused: false,
           };
         } else {
           return {
-            initialized: true,
             activated: true,
+            initialized: true,
             remained: prev.remained - 1,
           };
         }
@@ -68,11 +71,11 @@ class TimerPannel extends Component {
     this.setState(() => {
       clearInterval(this.interval);
       return {
+        activated: false,
         initialized: false,
+        paused: false,
         remained: timerValue,
         timerValue,
-        activated: false,
-        paused: false,
       };
     });
   };
@@ -91,8 +94,8 @@ class TimerPannel extends Component {
           clearInterval(this.interval);
           return {
             activated: false,
-            paused: false,
             initialized: false,
+            paused: false,
           };
         } else {
           return { paused: false, remained: prev.remained - 1 };
@@ -123,92 +126,99 @@ class TimerPannel extends Component {
     } else {
       this.setState({
         helperText: "",
-        timerValue: e.target.value * 60,
         remained: e.target.value * 60,
+        timerValue: e.target.value * 60,
       });
     }
   };
 
   handleSubmit = (e) => {
     e.preventDefault();
-    let { history, timerTitle, timerValue } = this.state;
+    let { timerTitle, timerValue } = this.state;
     if (timerTitle === "") {
       this.setState({ errorTextField: true, helperTextField: "Empty Title" });
     } else {
-      let new_task = {
-        id: history.length,
-        title: timerTitle,
-        duration: timerValue,
-      };
-      this.setState((prev) => {
-        return {
-          currentTitle: timerTitle,
-          current_task: new_task,
-          history: [...prev.history, "a", new_task],
-          remained: timerValue,
-          timerTitle: "",
-          timerValue,
-        };
-      });
-
-      this.handleStartTimer();
+      axios
+        .post(
+          "http://localhost:4000/graphql",
+          {
+            query: `mutation {addTask(title:"${timerTitle}", duration: ${timerValue}) {id title duration}}`,
+            variables: null,
+          },
+          { "Content-Type": "application/json" }
+        )
+        .then((res) => {
+          let current_task = res.data.data.addTask;
+          this.setState((prev) => {
+            return {
+              currentTitle: timerTitle,
+              current_task,
+              history: [...prev.history, current_task],
+              remained: timerValue,
+              timerTitle: "",
+              timerValue,
+            };
+          });
+          this.handleStartTimer();
+        })
+        .catch((e) => console.log(e));
     }
   };
 
   render() {
     let {
-      remained,
-      timerValue,
-      initialized,
       activated,
-      paused,
-      helperText,
-      history,
       currentTitle,
       current_task,
-      timerTitle,
       errorTextField,
+      helperText,
       helperTextField,
+      history,
+      initialized,
+      paused,
+      remained,
+      timerTitle,
+      timerValue,
     } = this.state;
 
     return (
       <>
         <Card sx={{ maxWidth: 360 }}>
           <CardMedia
+            alt="paella"
             component="img"
             height="140"
             image="https://mui.com/static/images/cards/paella.jpg"
-            alt="paella"
           />
           <CardContent>
             <TimerHistory
-              history={history}
               activated={activated}
               current_task={current_task}
-              remained={remained}
+              history={history}
               initialized={initialized}
               paused={paused}
+              remained={remained}
             />
             <TimerTitle activated={activated} taskTitle={currentTitle} />
             <Remained remained={remained} />
             <Timerform
               activated={activated}
-              timerValue={timerValue}
-              timerTitle={timerTitle}
-              helperText={helperText}
               errorTextField={errorTextField}
-              helperTextField={helperTextField}
               handleChangeSlider={this.handleChangeSlider}
               handleChangeTextField={this.handleChangeTextField}
               handleSubmit={this.handleSubmit}
+              helperText={helperText}
+              helperTextField={helperTextField}
+              timerTitle={timerTitle}
+              timerValue={timerValue}
             />
             <TimerControl
               activated={activated}
-              paused={paused}
-              handleStartTimer={this.handleSubmit}
-              handleStopTimer={this.handleStopTimer}
               handlePauseTimer={this.handlePauseTimer}
               handleResumeTimer={this.handleResumeTimer}
+              handleStartTimer={this.handleSubmit}
+              handleStopTimer={this.handleStopTimer}
+              paused={paused}
             />
           </CardContent>
         </Card>
