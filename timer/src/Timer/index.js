@@ -1,5 +1,8 @@
 import { Component } from "react";
-import axios from "axios";
+import { API, Auth } from "aws-amplify";
+import { taskByCreatedAt } from "../graphql/queries";
+import { createTask } from "../graphql/mutations";
+import { withAuthenticator } from "@aws-amplify/ui-react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -31,14 +34,17 @@ class TimerPannel extends Component {
   }
 
   componentDidMount() {
-    axios
-      .post(
-        "http://localhost:4000/graphql",
-        { query: "{tasks {id title duration}}", variables: null },
-        { "Content-Type": "application/json" }
-      )
-      .then((res) => this.setState({ history: res.data.data.tasks }))
-      .catch((e) => console.log(e));
+    Auth.currentAuthenticatedUser()
+      .then((res) => {
+        this.setState({ user: { username: res.username, ...res.attributes } });
+      })
+      .catch((e) => console.log("Auth error", e));
+    API.graphql({
+      query: taskByCreatedAt,
+      variables: { groupId: "001", sortDirection: "ASC" },
+    })
+      .then((res) => this.setState({ history: res.data.taskByCreatedAt.items }))
+      .catch((e) => console.log("API error", e));
   }
 
   handleStartTimer = () => {
@@ -134,31 +140,19 @@ class TimerPannel extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    let { timerTitle, timerValue } = this.state;
+    let { history, timerTitle, timerValue } = this.state;
+
     if (timerTitle === "") {
       this.setState({ errorTextField: true, helperTextField: "Empty Title" });
     } else {
-      axios
-        .post(
-          "http://localhost:4000/graphql",
-          {
-            query: `mutation {addTask(title:"${timerTitle}", duration: ${timerValue}) {id title duration}}`,
-            variables: null,
-          },
-          { "Content-Type": "application/json" }
-        )
+      API.graphql({
+        query: createTask,
+        variables: {
+          input: { groupId: "001", title: timerTitle, duration: timerValue },
+        },
+      })
         .then((res) => {
-          let current_task = res.data.data.addTask;
-          this.setState((prev) => {
-            return {
-              currentTitle: timerTitle,
-              current_task,
-              history: [...prev.history, current_task],
-              remained: timerValue,
-              timerTitle: "",
-              timerValue,
-            };
-          });
+          this.setState({ history: [...history, res.data.createTask] });
           this.handleStartTimer();
         })
         .catch((e) => console.log(e));
@@ -228,4 +222,4 @@ class TimerPannel extends Component {
   }
 }
 
-export default TimerPannel;
+export default withAuthenticator(TimerPannel);
