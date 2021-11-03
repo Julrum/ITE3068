@@ -1,8 +1,8 @@
 import { Component } from "react";
 import { API, Auth } from "aws-amplify";
-import { taskByCreatedAt } from "../graphql/queries";
+import { getUser, taskByCreatedAt } from "../graphql/queries";
 import { createTask } from "../graphql/mutations";
-import { withAuthenticator } from "@aws-amplify/ui-react";
+import { withAuthenticator, AmplifySignOut } from "@aws-amplify/ui-react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -30,21 +30,34 @@ class TimerPannel extends Component {
       remained: timerValue,
       timerTitle: "",
       timerValue,
+      user: {},
     };
   }
 
   componentDidMount() {
     Auth.currentAuthenticatedUser()
       .then((res) => {
-        this.setState({ user: { username: res.username, ...res.attributes } });
+        let user = { username: res.username, ...res.attributes };
+        this.setState({ user: user });
+        return API.graphql({
+          query: getUser,
+          variables: { id: user.sub },
+        })
+          .then((res) => {
+            let group = res.data.getUser.groups.items.pop();
+            if (group) {
+              return API.graphql({
+                query: taskByCreatedAt,
+                variables: { groupId: group.groupId },
+              });
+            }
+          })
+          .then((res) => {
+            this.setState({ history: res.data.taskByCreatedAt.items });
+          })
+          .catch((err) => console.log("API errors", err));
       })
       .catch((e) => console.log("Auth error", e));
-    API.graphql({
-      query: taskByCreatedAt,
-      variables: { groupId: "001", sortDirection: "ASC" },
-    })
-      .then((res) => this.setState({ history: res.data.taskByCreatedAt.items }))
-      .catch((e) => console.log("API error", e));
   }
 
   handleStartTimer = () => {
@@ -155,7 +168,7 @@ class TimerPannel extends Component {
           this.setState({ history: [...history, res.data.createTask] });
           this.handleStartTimer();
         })
-        .catch((e) => console.log(e));
+        .catch((e) => console.log("API error: ", e));
     }
   };
 
@@ -215,6 +228,7 @@ class TimerPannel extends Component {
               paused={paused}
             />
           </CardContent>
+          <AmplifySignOut />
         </Card>
         <TimeUp open={remained <= 0} handleClose={this.handleStopTimer} />
       </>

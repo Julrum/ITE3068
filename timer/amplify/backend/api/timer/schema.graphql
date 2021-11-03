@@ -11,3 +11,23 @@ type Task
   duration: Int!
   createdAt: AWSDateTime!
 }
+
+type Group @model {
+  id: ID!
+  title: String!
+  description: String
+}
+
+type UserGroup @model @key(name: "byUser", fields: ["userId", "groupId"]) {
+  userId: ID!
+  groupId: ID!
+  user: User! @connection(fields: ["userId"])
+  group: Group! @connection(fields: ["groupId"])
+}
+
+type User @model{
+  id: ID!
+  groups: [UserGroup] @connection(keyName:"byUser", fields:["id"])
+  createdAt: AWSDateTime!
+  updateAt: AWSDateTime!
+}
